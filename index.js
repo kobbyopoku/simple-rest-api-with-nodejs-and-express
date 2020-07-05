@@ -94,10 +94,8 @@ router.post('/', function (req, res, next) {
 });
 
 // CREATE A PUT TO UPDATE
-router.put('/', function (req, res, next) {
-
-
-  pieRepo.getById(req.param.id, req.body, function (data) {
+router.put('/:id', function (req, res, next) {
+  pieRepo.getById(req.params.id, function (data) {
     if (data) {
       pieRepo.update(req.body, req.params.id, function (data) {
         res.status(200).json({
@@ -105,6 +103,41 @@ router.put('/', function (req, res, next) {
           "message": "Pie '" + req.params.id + "' updated",
           "data": data
         });
+      });
+    } else {
+      res.status(404).json({
+        "status": 404,
+        "message": "Pie '" + req.params.id + "' not found",
+        "error": {
+          "code": "NOT_FOUND",
+          "message": "Pie '" + req.params.id + "' not found",
+        }
+      });
+    }
+  },
+    function (err) {
+      next(err);
+    });
+});
+
+router.delete('/:id', function (req, res, next) {
+  pieRepo.getById(req.params.id, function (data) {
+    if (data) {
+      pieRepo.delete(req.params.id, function (data) {
+        res.status(200).json({
+          "status": 200,
+          "message": "Pie '" + req.params.id + "' deleted",
+          "data": data
+        });
+      });
+    } else {
+      res.status(404).json({
+        "status": 404,
+        "message": "Pie '" + req.params.id + "' not found",
+        "error": {
+          "code": "NOT_FOUND",
+          "message": "Pie '" + req.params.id + "' not found",
+        }
       });
     }
   },
