@@ -46,5 +46,13 @@
     "slicePrice": 4.99,
     "sliceCalories": 67,
     "imageUrl": "images/Strawberry.png"
+  },
+  {
+    "id": 7,
+    "name": "Ginger pie",
+    "wholePrice": 19.99,
+    "slicePrice": 4.99,
+    "sliceCalories": 67,
+    "imageUrl": "images/ginger.png"
   }
 ]

@@ -7,7 +7,7 @@ let pieRepo = require('./repos/pieRepo');
 let router = express.Router();
 
 // CONFIGURE MIDDLEWARE TO SUPPPORT JSON DATA PARSING IN REQUEST OBJECT
-app.use(express.Router());
+app.use(express.json());
 
 
 // CREATE A GET TO RETURN LIST OF ALL DATA
@@ -78,6 +78,41 @@ router.get('/:id', function (req, res, next) {
     next(err);
   });
 });
+
+
+// CREATE A POST TO Add
+router.post('/', function (req, res, next) {
+  pieRepo.insert(req.body, function (data) {
+    res.status(201).json({
+      "status": 201,
+      "message": "Created",
+      "data": data
+    });
+  }, function (err) {
+    next(err);
+  });
+});
+
+// CREATE A PUT TO UPDATE
+router.put('/', function (req, res, next) {
+
+
+  pieRepo.getById(req.param.id, req.body, function (data) {
+    if (data) {
+      pieRepo.update(req.body, req.params.id, function (data) {
+        res.status(200).json({
+          "status": 200,
+          "message": "Pie '" + req.params.id + "' updated",
+          "data": data
+        });
+      });
+    }
+  },
+    function (err) {
+      next(err);
+    });
+});
+
 
 app.use('/api', router);
 
