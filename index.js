@@ -147,7 +147,56 @@ router.delete('/:id', function (req, res, next) {
 });
 
 
+// CREATE A PUT TO UPDATE
+router.patch('/:id', function (req, res, next) {
+  pieRepo.getById(req.params.id, function (data) {
+    if (data) {
+      pieRepo.update(req.body, req.params.id, function (data) {
+        res.status(200).json({
+          "status": 200,
+          "message": "Pie '" + req.params.id + "' updated",
+          "data": data
+        });
+      });
+    } else {
+      res.status(404).json({
+        "status": 404,
+        "message": "Pie '" + req.params.id + "' not found",
+        "error": {
+          "code": "NOT_FOUND",
+          "message": "Pie '" + req.params.id + "' not found",
+        }
+      });
+    }
+  },
+    function (err) {
+      next(err);
+    });
+});
+
+function errorBuilder(err) {
+  return {
+    "status": 500,
+    "message": err.message,
+    "error": {
+      "code": "INTERNAL_SERVER_ERROR",
+      "message": err.message,
+      "errno": err.errno,
+      "call": err.syscall,
+    }
+  }
+}
+
 app.use('/api', router);
+
+app.use(function (err, req, res, next) {
+  console.log(errorBuilder(err));
+  next(err);
+});
+
+app.use(function (err, req, res, next) {
+  res.status(500).json(errorBuilder(err));
+});
 
 var server = app.listen(5000, function () {
   console.log('Node server is running on http://localhost:5000...')
